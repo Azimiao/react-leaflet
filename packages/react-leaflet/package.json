@@ -1,6 +1,6 @@
 {
   "name": "@azimiao/react-leaflet",
-  "version": "4.2.1",
+  "version": "4.2.1b1",
   "description": "React components for Leaflet maps",
   "repository": {
     "type": "git",
