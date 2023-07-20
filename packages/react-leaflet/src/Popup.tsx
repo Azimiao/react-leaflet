@@ -12,7 +12,7 @@ import {
   type PopupEvent,
   type PopupOptions,
 } from 'leaflet'
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect, useRef, useLayoutEffect } from 'react'
 
 export interface PopupProps extends PopupOptions, EventedProps {
   children?: ReactNode
@@ -27,7 +27,7 @@ export const Popup = createOverlayComponent<LeafletPopup, PopupProps>(
   function usePopupLifecycle(
     element: LeafletElement<LeafletPopup>,
     context: LeafletContextInterface,
-    { position }: PopupProps,
+    { position, minWidth, maxWidth, maxHeight },
     setOpen: SetOpenFunc,
   ) {
     useEffect(
@@ -74,5 +74,24 @@ export const Popup = createOverlayComponent<LeafletPopup, PopupProps>(
       },
       [element, context, setOpen, position],
     )
+
+    const firstUpdate = useRef(true)
+    useLayoutEffect(() => {
+      if (firstUpdate.current) {
+        firstUpdate.current = false
+        return
+      }
+      const { instance } = element
+      if (minWidth != null) {
+        instance.options.minWidth = minWidth
+      }
+      if (maxWidth != null) {
+        instance.options.maxWidth = maxWidth
+      }
+      if (maxHeight != null) {
+        instance.options.maxHeight = maxHeight
+      }
+      instance.update()
+    }, [element, minWidth, maxWidth, maxHeight])
   },
 )
